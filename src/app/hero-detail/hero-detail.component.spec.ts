@@ -1,7 +1,7 @@
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { HeroService } from './../hero.service';
-import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { TestBed, ComponentFixture, fakeAsync, tick, flush } from '@angular/core/testing';
 import { HeroDetailComponent } from './hero-detail.component';
 import { Location } from '@angular/common';
 import { of } from 'rxjs/internal/observable/of';
@@ -44,18 +44,17 @@ describe('HeroDetailComponent', () => {
     expect(fixture.nativeElement.querySelector('h2').textContent).toContain('FRED');
   });
 
-  it('should call updateHero when save is called', (done) => {
+  it('should call updateHero when save is called', fakeAsync(() => {
     // arrange
     mockHeroService.updateHero.and.returnValue(of({}));
     fixture.detectChanges();
 
     // act
     fixture.componentInstance.save();
+    // tick(250);
+    flush();
 
     // assert
-    setTimeout(() => {
-      expect(mockHeroService.updateHero).toHaveBeenCalled();
-      done();
-    }, 300);
-  });
+    expect(mockHeroService.updateHero).toHaveBeenCalled();
+  }));
 });
